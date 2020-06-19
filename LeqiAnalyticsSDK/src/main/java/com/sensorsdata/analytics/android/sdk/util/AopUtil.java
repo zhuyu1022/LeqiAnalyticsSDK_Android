@@ -38,6 +38,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.sensorsdata.analytics.android.sdk.AopConstants;
+
 import com.sensorsdata.analytics.android.sdk.R;
 import com.sensorsdata.analytics.android.sdk.SALog;
 import com.sensorsdata.analytics.android.sdk.ScreenAutoTracker;

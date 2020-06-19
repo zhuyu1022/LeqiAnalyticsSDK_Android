@@ -28,7 +28,7 @@ public class MyApplication extends Application {
      */
    // private final static String SA_SERVER_URL = "https://sdkdebugtest.datasink.sensorsdata.cn/sa?project=default&token=cfb8b60e42e0ae9b";
 
-    private final static String SA_SERVER_URL = "https://big-data.leqi.us/api/CHANG_KUAN/";
+    private final static String SA_SERVER_URL = "https://big-data.leqi.us/api/test/";
 
 
     //    https://big-data.leqi.us/api/<app_key>/event/<sdk_type>
@@ -53,8 +53,10 @@ public class MyApplication extends Application {
                 .enableTrackAppCrash()
                 .enableVisualizedAutoTrack(true)
                 .enableVisualizedAutoTrackConfirmDialog(true);
+
         SensorsDataAPI.startWithConfigOptions(this, configOptions);
         SensorsDataAPI.sharedInstance(this).trackFragmentAppViewScreen();
         SensorsDataAPI.sharedInstance().enableHeatMap();
+        SensorsDataAPI.sharedInstance().setFlushInterval(5000);
     }
 }

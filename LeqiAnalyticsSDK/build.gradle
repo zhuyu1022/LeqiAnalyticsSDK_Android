@@ -1,11 +1,16 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 // JitPack Maven
-apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'com.jfrog.bintray'
+//apply plugin: 'com.github.dcendents.android-maven'
+//apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.novoda.bintray-release'
 
 version = "4.1.0"
 def min_plugin_version = "3.0.0"
+
+
+
+
 
 android {
     compileSdkVersion 29
@@ -16,7 +21,7 @@ android {
         minSdkVersion 9
         targetSdkVersion 29
         versionCode 1
-        versionName "1.0"
+        versionName "0.0.1"
         consumerProguardFiles 'proguard-rules.pro'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
@@ -46,34 +51,43 @@ android {
     }
 }
 
+publish {
+    userOrg = 'zhuyu'
+    groupId = 'com.leqi.analytics.android'
+    artifactId = 'analytics'
+    publishVersion = android.defaultConfig.versionName
+    desc = 'The official Android SDK for Leqi Analytics.'
+    website = 'https://github.com/zhuyu1022/LeqiAnalyticsSDK_Android'
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:core:1.1.0'
-    androidTestImplementation 'androidx.test:runner:1.1.1'
-    androidTestImplementation 'androidx.test:rules:1.1.1'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
+    testImplementation 'junit:junit:4.13'
+    androidTestImplementation 'androidx.test:core:1.2.0'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     // Espresso dependencies
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-accessibility:3.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-web:3.1.1'
-    androidTestImplementation 'androidx.test.espresso.idling:idling-concurrent:3.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-idling-resource:3.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-accessibility:3.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-web:3.2.0'
+    androidTestImplementation 'androidx.test.espresso.idling:idling-concurrent:3.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-idling-resource:3.2.0'
     androidTestImplementation 'org.mockito:mockito-core:2.27.0'
     androidTestImplementation 'org.mockito:mockito-android:2.27.0'
     //Robolectric & JVM test
-    testImplementation 'androidx.test:core:1.1.0'
-    testImplementation 'androidx.test.ext:junit:1.1.0'
-    testImplementation 'org.robolectric:robolectric:4.2'
-    testImplementation 'androidx.test.espresso:espresso-core:3.1.1'
-    testImplementation 'androidx.test.espresso:espresso-contrib:3.1.1'
-    testImplementation 'androidx.test.espresso:espresso-intents:3.1.1'
-    testImplementation 'androidx.test.espresso:espresso-accessibility:3.1.1'
-    testImplementation 'androidx.test.espresso:espresso-web:3.1.1'
-    testImplementation 'androidx.test.espresso.idling:idling-concurrent:3.1.1'
-    testImplementation 'org.robolectric:robolectric:4.2'
+    testImplementation 'androidx.test:core:1.2.0'
+    testImplementation 'androidx.test.ext:junit:1.1.1'
+    testImplementation 'org.robolectric:robolectric:4.2.1'
+    testImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    testImplementation 'androidx.test.espresso:espresso-contrib:3.2.0'
+    testImplementation 'androidx.test.espresso:espresso-intents:3.2.0'
+    testImplementation 'androidx.test.espresso:espresso-accessibility:3.2.0'
+    testImplementation 'androidx.test.espresso:espresso-web:3.2.0'
+    testImplementation 'androidx.test.espresso.idling:idling-concurrent:3.2.0'
+    testImplementation 'org.robolectric:robolectric:4.2.1'
     //mock
     testImplementation 'org.mockito:mockito-core:2.27.0'
     testImplementation 'org.mockito:mockito-android:2.27.0'
@@ -86,119 +100,7 @@ dependencies {
 
 }
 
-def siteUrl = 'https://github.com/sensorsdata/sa-sdk-android'
-def gitUrl = 'https://github.com/sensorsdata/sa-sdk-android.git'
-group = "com.leqi.analytics.android"
-project.archivesBaseName = "SensorsAnalyticsSDK"
 
-install {
-    repositories.mavenInstaller {
-        // generates POM.xml with proper parameters
-        pom {
-            project {
-                packaging 'aar'
-                name 'The official Android SDK for Sensors Analytics.'
-                description 'The official Android SDK for Sensors Analytics.'
-                url siteUrl
-                // Set your license
-                licenses {
-                    license {
-                        name 'The Apache Software License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-                developers {
-                    developer {
-                        id 'zouyuhan'
-                        name 'Yuhan ZOU'
-                        email 'zouyuhan@sensorsdata.cn'
-                    }
-                }
-                scm {
-                    connection gitUrl
-                    developerConnection gitUrl
-                    url siteUrl
-                }
-            }
-        }
-    }
-}
-
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
-}
-
-task javadoc(type: Javadoc) {
-    dependsOn 'assembleRelease'
-    source = android.sourceSets.main.java.srcDirs +
-            'build/generated/not_namespaced_r_class_sources/release/generateReleaseRFile/out/com/sensorsdata/analytics/android/sdk/R.java'
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-}
-
-javadoc {
-    options {
-        encoding "UTF-8"
-        charSet 'UTF-8'
-    }
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-task makeJar(type: Copy) {
-    def jarName = 'SensorsAnalytics-Android-SDK-Release-' + version + '.jar'
-    delete 'build/libs/' + jarName
-    from('build/intermediates/packaged-classes/release/')
-    into('build/libs/')
-    include('classes.jar')
-    rename('classes.jar', jarName)
-}
-
-makeJar.dependsOn(build)
-
-artifacts {
-    archives javadocJar
-    archives sourcesJar
-}
-
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-bintray {
-    user = properties.getProperty("bintray.user")
-    key = properties.getProperty("bintray.apikey")
-
-    def mavenUser = properties.getProperty("maven.user")
-    def mavenPassword = properties.getProperty("maven.password")
-
-    configurations = ['archives']
-    pkg {
-        repo = "maven"
-        name = "SensorsAnalyticsSDK"
-        desc = 'The official Android SDK for Sensors Analytics.'
-        websiteUrl = siteUrl
-        vcsUrl = gitUrl
-        licenses = ["Apache-2.0"]
-        labels = ['android']
-        publish = true
-        publicDownloadNumbers = true
-        version {
-
-            mavenCentralSync {
-                sync = true
-                //Optional (true by default). Determines whether to sync the version to Maven Central.
-                user = mavenUser //OSS user token
-                password = mavenPassword //OSS user password
-                close = '1'
-                //Optional property. By default the staging repository is closed and artifacts are released to Maven Central.
-                // You can optionally turn this behaviour off (by putting 0 as value) and release the version manually.
-            }
-        }
-
-    }
-}
 repositories {
     mavenCentral()
 }

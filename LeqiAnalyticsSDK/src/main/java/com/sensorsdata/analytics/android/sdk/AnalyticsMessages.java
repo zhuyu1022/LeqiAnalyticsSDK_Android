@@ -237,7 +237,9 @@ class AnalyticsMessages {
             try {
                 String data;
                 try {
-                    data = encodeData(rawMessage);
+                    //data = encodeData(rawMessage);
+                    encodeData(rawMessage);
+                    data = rawMessage;
                 } catch (IOException e) {
                     // 格式错误，直接将数据删除
                     throw new InvalidDataException(e);
@@ -291,6 +293,8 @@ class AnalyticsMessages {
     }
 
     private void sendHttpRequest(String path, String data, String rawMessage, boolean isRedirects) throws ConnectErrorException, ResponseErrorException {
+
+        SALog.i("data", data);
         HttpURLConnection connection = null;
         InputStream in = null;
         OutputStream out = null;
@@ -313,32 +317,33 @@ class AnalyticsMessages {
                 ((HttpsURLConnection) connection).setSSLSocketFactory(SensorsDataAPI.sharedInstance().getSSLSocketFactory());
             }
             connection.setInstanceFollowRedirects(false);
-            if (SensorsDataAPI.sharedInstance(mContext).getDebugMode() == SensorsDataAPI.DebugMode.DEBUG_ONLY) {
-                connection.addRequestProperty("Dry-Run", "true");
-            }
+           // if (SensorsDataAPI.sharedInstance(mContext).getDebugMode() == SensorsDataAPI.DebugMode.DEBUG_ONLY) {
+              //  connection.addRequestProperty("Dry-Run", "true");
+           // }
 
-            connection.setRequestProperty("Cookie", SensorsDataAPI.sharedInstance(mContext).getCookie(false));
+           // connection.setRequestProperty("Cookie", SensorsDataAPI.sharedInstance(mContext).getCookie(false));
 
-            Uri.Builder builder = new Uri.Builder();
-            //先校验crc
-            if (!TextUtils.isEmpty(data)) {
-                builder.appendQueryParameter("crc", String.valueOf(data.hashCode()));
-            }
+//            Uri.Builder builder = new Uri.Builder();
+//            //先校验crc
+//            if (!TextUtils.isEmpty(data)) {
+//                builder.appendQueryParameter("crc", String.valueOf(data.hashCode()));
+//            }
+//
+//            builder.appendQueryParameter("gzip", "1");
+//            builder.appendQueryParameter("data_list", data);
 
-            builder.appendQueryParameter("gzip", "1");
-            builder.appendQueryParameter("data_list", data);
-
-            String query = builder.build().getEncodedQuery();
-            if (TextUtils.isEmpty(query)) {
+            //String query = builder.build().getEncodedQuery();
+            if (TextUtils.isEmpty(data)) {
                 return;
             }
-
-            connection.setFixedLengthStreamingMode(query.getBytes(CHARSET_UTF8).length);
+            // 设置文件类型:
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setFixedLengthStreamingMode(data.getBytes(CHARSET_UTF8).length);
             connection.setDoOutput(true);
             connection.setRequestMethod("POST");
             out = connection.getOutputStream();
             bout = new BufferedOutputStream(out);
-            bout.write(query.getBytes(CHARSET_UTF8));
+            bout.write(data.getBytes(CHARSET_UTF8));
             bout.flush();
 
             int responseCode = connection.getResponseCode();

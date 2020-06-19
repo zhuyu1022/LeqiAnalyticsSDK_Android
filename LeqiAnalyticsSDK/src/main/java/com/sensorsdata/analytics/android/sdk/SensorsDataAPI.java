@@ -37,6 +37,7 @@ import android.view.View;
 import android.view.Window;
 import android.webkit.WebView;
 import android.widget.Toast;
+
 import com.sensorsdata.analytics.android.sdk.data.DbAdapter;
 import com.sensorsdata.analytics.android.sdk.data.PersistentLoader;
 import com.sensorsdata.analytics.android.sdk.data.persistent.PersistentDistinctId;
@@ -266,10 +267,10 @@ public class SensorsDataAPI implements ISensorsDataAPI {
     /**
      * 初始化并获取 SensorsDataAPI 单例
      *
-     * @param context App 的 Context
+     * @param context   App 的 Context
      * @param serverURL 用于收集事件的服务地址
      * @param debugMode Debug 模式,
-     * {@link SensorsDataAPI.DebugMode}
+     *                  {@link SensorsDataAPI.DebugMode}
      * @return SensorsDataAPI 单例
      */
     @Deprecated
@@ -280,7 +281,7 @@ public class SensorsDataAPI implements ISensorsDataAPI {
     /**
      * 初始化并获取 SensorsDataAPI 单例
      *
-     * @param context App 的 Context
+     * @param context   App 的 Context
      * @param serverURL 用于收集事件的服务地址
      * @return SensorsDataAPI 单例
      */
@@ -292,7 +293,7 @@ public class SensorsDataAPI implements ISensorsDataAPI {
     /**
      * 初始化并获取 SensorsDataAPI 单例
      *
-     * @param context App 的 Context
+     * @param context         App 的 Context
      * @param saConfigOptions SDK 的配置项
      * @return SensorsDataAPI 单例
      */
@@ -309,7 +310,7 @@ public class SensorsDataAPI implements ISensorsDataAPI {
     /**
      * 初始化神策 SDK
      *
-     * @param context App 的 Context
+     * @param context         App 的 Context
      * @param saConfigOptions SDK 的配置项
      */
     public static void startWithConfigOptions(Context context, SAConfigOptions saConfigOptions) {
@@ -435,7 +436,7 @@ public class SensorsDataAPI implements ISensorsDataAPI {
     /**
      * 更新 SensorsDataSDKRemoteConfig
      *
-     * @param sdkRemoteConfig SensorsDataSDKRemoteConfig 在线控制 SDK 的配置
+     * @param sdkRemoteConfig   SensorsDataSDKRemoteConfig 在线控制 SDK 的配置
      * @param effectImmediately 是否立即生效
      */
     private void setSDKRemoteConfig(SensorsDataSDKRemoteConfig sdkRemoteConfig, boolean effectImmediately) {
@@ -1836,7 +1837,7 @@ public class SensorsDataAPI implements ISensorsDataAPI {
     /**
      * SDK 内部用来调用触发事件
      *
-     * @param eventName 事件名称
+     * @param eventName  事件名称
      * @param properties 事件属性
      */
     void trackInternal(final String eventName, final JSONObject properties) {
@@ -1911,7 +1912,7 @@ public class SensorsDataAPI implements ISensorsDataAPI {
      * 触发事件的暂停/恢复
      *
      * @param eventName 事件名称
-     * @param isPause 设置是否暂停
+     * @param isPause   设置是否暂停
      */
     private void trackTimerState(final String eventName, final boolean isPause) {
         final long startTime = SystemClock.elapsedRealtime();
@@ -2202,7 +2203,7 @@ public class SensorsDataAPI implements ISensorsDataAPI {
                 while (iter.hasNext()) {
                     Map.Entry entry = (Map.Entry) iter.next();
                     if (entry != null) {
-                        if ("$AppEnd".equals(entry.getKey().toString())) {
+                        if (Config.EventName.CLOSE.equals(entry.getKey().toString())) {
                             continue;
                         }
                         EventTimer eventTimer = (EventTimer) entry.getValue();
@@ -2304,6 +2305,7 @@ public class SensorsDataAPI implements ISensorsDataAPI {
 
     /**
      * 设置全局属性
+     *
      * @param superProperties 事件公共属性
      */
     @Override
@@ -2808,7 +2810,7 @@ public class SensorsDataAPI implements ISensorsDataAPI {
     }
 
     /**
-     * @param eventName 事件名
+     * @param eventName       事件名
      * @param eventProperties 事件属性
      * @return 该事件是否入库
      */
@@ -2870,7 +2872,7 @@ public class SensorsDataAPI implements ISensorsDataAPI {
     private void trackEvent(final EventType eventType, String eventName, final JSONObject properties, final String
             originalDistinctId) {
         try {
-            Log.d("trackEvent",properties.toString());
+            Log.d("trackEvent", properties.toString());
             EventTimer eventTimer = null;
             if (!TextUtils.isEmpty(eventName)) {
                 synchronized (mTrackTimer) {
@@ -2893,22 +2895,22 @@ public class SensorsDataAPI implements ISensorsDataAPI {
 
                 if (eventType.isTrack()) {
                     deviceProperties = new JSONObject(mDeviceInfo);
-                    synchronized (mSuperProperties) {
-                        JSONObject superProperties = mSuperProperties.get();
-                        SensorsDataUtils.mergeJSONObject(superProperties, deviceProperties);
-                    }
-
-                    try {
-                        if (mDynamicSuperProperties != null) {
-                            JSONObject dynamicSuperProperties = mDynamicSuperProperties.getDynamicSuperProperties();
-                            if (dynamicSuperProperties != null) {
-                                assertPropertyTypes(dynamicSuperProperties);
-                                SensorsDataUtils.mergeJSONObject(dynamicSuperProperties, deviceProperties);
-                            }
-                        }
-                    } catch (Exception e) {
-                        SALog.printStackTrace(e);
-                    }
+//                    synchronized (mSuperProperties) {
+//                        JSONObject superProperties = mSuperProperties.get();
+//                        SensorsDataUtils.mergeJSONObject(superProperties, deviceProperties);
+//                    }
+//
+//                    try {
+//                        if (mDynamicSuperProperties != null) {
+//                            JSONObject dynamicSuperProperties = mDynamicSuperProperties.getDynamicSuperProperties();
+//                            if (dynamicSuperProperties != null) {
+//                                assertPropertyTypes(dynamicSuperProperties);
+//                                SensorsDataUtils.mergeJSONObject(dynamicSuperProperties, deviceProperties);
+//                            }
+//                        }
+//                    } catch (Exception e) {
+//                        SALog.printStackTrace(e);
+//                    }
 
                     // 当前网络状况
                     String networkType = NetworkUtils.networkType(mContext);
@@ -2939,9 +2941,9 @@ public class SensorsDataAPI implements ISensorsDataAPI {
                 } else {
                     return;
                 }
-
-                String lib_version = VERSION;
-                String app_version =  AppInfoUtils.getAppVersionName(mContext);
+                //这里用我们自己的sdk version 不用神策的
+                String lib_version = "" + BuildConfig.VERSION_CODE;
+                String app_version = AppInfoUtils.getAppVersionName(mContext);
                 long eventTime = System.currentTimeMillis();
                 try {
                     //设置appEnd事件的属性
@@ -2966,30 +2968,40 @@ public class SensorsDataAPI implements ISensorsDataAPI {
                 } catch (Exception e) {
                     SALog.printStackTrace(e);
                 }
-                //SensorsDataUtils.mergeJSONObject(properties, deviceProperties);
+                // SensorsDataUtils.mergeJSONObject(properties, deviceProperties);
 
                 final JSONObject dataObj = new JSONObject();
 
                 dataObj.put(Config.UUID, mAndroidId);
                 dataObj.put(Config.TIME, eventTime);
                 dataObj.put(Config.SDK_VERSION, lib_version);
-                dataObj.put(Config.APP_VERSION,app_version);
+                dataObj.put(Config.APP_VERSION, app_version);
                 dataObj.put(Config.EVENT_TYPE, eventName);
                 // dataObj.put("type", eventType.getEventType());
                 //拿到properties中的参数，按照自己的格式上报
                 String screenName = properties.optString(AopConstants.SCREEN_NAME);
                 dataObj.put(Config.PATH, screenName);
+
+
                 //获取element属性
-                String elementId=properties.optString(AopConstants.ELEMENT_ID);
-                String elementType=properties.optString(AopConstants.ELEMENT_TYPE);
-                String elementContent=properties.optString(AopConstants.ELEMENT_CONTENT);
-                String elementPosition=properties.optString(AopConstants.ELEMENT_POSITION);
+                String elementId = properties.optString(AopConstants.ELEMENT_ID);
+                String elementType = properties.optString(AopConstants.ELEMENT_TYPE);
+                String elementContent = properties.optString(AopConstants.ELEMENT_CONTENT);
+                String elementSelector = properties.optString(AopConstants.ELEMENT_SELECTOR);
+                String elementPosition = properties.optString(AopConstants.ELEMENT_POSITION);
                 final JSONObject elementObj = new JSONObject();
-                elementObj.put(Config.Elemet.ELEMENT_ID,elementId);
-                elementObj.put(Config.Elemet.ELEMENT_TYPE,elementType);
-                elementObj.put(Config.Elemet.ELEMENT_CONTENT,elementContent);
-                elementObj.put(Config.Elemet.ELEMENT_POSITION,elementPosition);
+                elementObj.put(Config.Elemet.ELEMENT_ID, elementId);
+                elementObj.put(Config.Elemet.ELEMENT_TYPE, elementType);
+                elementObj.put(Config.Elemet.ELEMENT_CONTENT, elementContent);
+                elementObj.put(Config.Elemet.ELEMENT_POSITION, elementPosition);
                 dataObj.put(Config.ELEMENT, elementObj);
+
+                if (Config.EventName.CLICK.equals(eventName)) {
+                    dataObj.put(Config.EVENT_NAME, screenName + "/" + elementSelector);
+                } else {
+                    dataObj.put(Config.EVENT_NAME, screenName);
+                }
+
 
                 try {
                     SecureRandom random = new SecureRandom();
@@ -3393,13 +3405,13 @@ public class SensorsDataAPI implements ISensorsDataAPI {
             }
 
             switch (eventName) {
-                case "$AppStart":
+                case Config.EventName.START:
                     return APP_START;
-                case "$AppEnd":
+                case Config.EventName.CLOSE:
                     return APP_END;
-                case "$AppClick":
+                case Config.EventName.CLICK:
                     return APP_CLICK;
-                case "$AppViewScreen":
+                case Config.EventName.VIEW:
                     return APP_VIEW_SCREEN;
                 default:
                     break;
@@ -3411,10 +3423,10 @@ public class SensorsDataAPI implements ISensorsDataAPI {
         static boolean isAutoTrackType(String eventName) {
             if (!TextUtils.isEmpty(eventName)) {
                 switch (eventName) {
-                    case "$AppStart":
-                    case "$AppEnd":
-                    case "$AppClick":
-                    case "$AppViewScreen":
+                    case Config.EventName.START:
+                    case Config.EventName.CLOSE:
+                    case Config.EventName.CLICK:
+                    case Config.EventName.VIEW:
                         return true;
                     default:
                         break;
