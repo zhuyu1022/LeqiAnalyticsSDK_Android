@@ -167,6 +167,7 @@ public class SensorsDataAPI implements ISensorsDataAPI {
     private SensorsDataTrackEventCallBack mTrackEventCallBack;
     private List<SAEventListener> mEventListenerList;
     private IFragmentAPI mFragmentAPI;
+    private String mScreenName;
 
     //private
     SensorsDataAPI() {
@@ -1821,6 +1822,8 @@ public class SensorsDataAPI implements ISensorsDataAPI {
             public void run() {
                 try {
                     JSONObject _properties = ChannelUtils.checkOrSetChannelCallbackEvent(getConfigOptions().isAutoAddChannelCallbackEvent, eventName, properties, mContext);
+
+
                     trackEvent(EventType.TRACK, eventName, _properties, null);
                 } catch (Exception e) {
                     SALog.printStackTrace(e);
@@ -2055,7 +2058,7 @@ public class SensorsDataAPI implements ISensorsDataAPI {
                         if (properties != null) {
                             SensorsDataUtils.mergeJSONObject(properties, trackProperties);
                         }
-                        trackInternal(Config.EventName.VIEW, trackProperties);
+                        trackInternal(Config.EventType.VIEW, trackProperties);
                     }
                 } catch (Exception e) {
                     SALog.printStackTrace(e);
@@ -2203,7 +2206,7 @@ public class SensorsDataAPI implements ISensorsDataAPI {
                 while (iter.hasNext()) {
                     Map.Entry entry = (Map.Entry) iter.next();
                     if (entry != null) {
-                        if (Config.EventName.CLOSE.equals(entry.getKey().toString())) {
+                        if (Config.EventType.CLOSE.equals(entry.getKey().toString())) {
                             continue;
                         }
                         EventTimer eventTimer = (EventTimer) entry.getValue();
@@ -2869,36 +2872,36 @@ public class SensorsDataAPI implements ISensorsDataAPI {
         return enterDb;
     }
 
-    private void trackEvent(final EventType eventType, String eventName, final JSONObject properties, final String
+    private void trackEvent(final EventType trackType, String eventType, final JSONObject properties, final String
             originalDistinctId) {
         try {
-            Log.d("trackEvent", properties.toString());
             EventTimer eventTimer = null;
-            if (!TextUtils.isEmpty(eventName)) {
+            if (!TextUtils.isEmpty(eventType)) {
                 synchronized (mTrackTimer) {
-                    eventTimer = mTrackTimer.get(eventName);
-                    mTrackTimer.remove(eventName);
+                    eventTimer = mTrackTimer.get(eventType);
+                    mTrackTimer.remove(eventType);
                 }
 
-                if (eventName.endsWith("_SATimer") && eventName.length() > 45) {// Timer 计时交叉计算拼接的字符串长度 45
-                    eventName = eventName.substring(0, eventName.length() - 45);
+                if (eventType.endsWith("_SATimer") && eventType.length() > 45) {// Timer 计时交叉计算拼接的字符串长度 45
+                    eventType = eventType.substring(0, eventType.length() - 45);
                 }
             }
 
-            if (eventType.isTrack()) {
-                assertKey(eventName);
+            if (trackType.isTrack()) {
+                assertKey(eventType);
             }
             assertPropertyTypes(properties);
 
             try {
                 JSONObject deviceProperties;
 
-                if (eventType.isTrack()) {
+                if (trackType.isTrack()) {
                     deviceProperties = new JSONObject(mDeviceInfo);
-//                    synchronized (mSuperProperties) {
-//                        JSONObject superProperties = mSuperProperties.get();
-//                        SensorsDataUtils.mergeJSONObject(superProperties, deviceProperties);
-//                    }
+                    //设置事件公共属性
+                    synchronized (mSuperProperties) {
+                        JSONObject superProperties = mSuperProperties.get();
+                        SensorsDataUtils.mergeJSONObject(superProperties, deviceProperties);
+                    }
 //
 //                    try {
 //                        if (mDynamicSuperProperties != null) {
@@ -2936,7 +2939,7 @@ public class SensorsDataAPI implements ISensorsDataAPI {
 //                    } catch (Exception e) {
 //                        com.sensorsdata.analytics.android.sdk.SALog.printStackTrace(e);
 //                    }
-                } else if (eventType.isProfile()) {
+                } else if (trackType.isProfile()) {
                     deviceProperties = new JSONObject();
                 } else {
                     return;
@@ -2945,64 +2948,86 @@ public class SensorsDataAPI implements ISensorsDataAPI {
                 String lib_version = "" + BuildConfig.VERSION_CODE;
                 String app_version = AppInfoUtils.getAppVersionName(mContext);
                 long eventTime = System.currentTimeMillis();
-                try {
-                    //设置appEnd事件的属性
-                    if (Config.EventName.CLOSE.equals(eventName)) {
-                        long appEndTime = properties.getLong("event_time");
-                        eventTime = appEndTime > 0 ? appEndTime : eventTime;
-                        String appEnd_lib_version = properties.optString(Config.SDK_VERSION);
-                        String appEnd_app_version = properties.optString(Config.APP_VERSION);
-                        if (!TextUtils.isEmpty(appEnd_lib_version)) {
-                            lib_version = appEnd_lib_version;
-                        } else {
-                            properties.remove(Config.SDK_VERSION);
-                        }
-
-                        if (!TextUtils.isEmpty(appEnd_app_version)) {
-                            app_version = appEnd_app_version;
-                        } else {
-                            properties.remove(Config.APP_VERSION);
-                        }
-                        properties.remove("event_time");
-                    }
-                } catch (Exception e) {
-                    SALog.printStackTrace(e);
-                }
                 // SensorsDataUtils.mergeJSONObject(properties, deviceProperties);
-
+                //拿到properties中的参数，按照自己的格式上报
                 final JSONObject dataObj = new JSONObject();
 
-                dataObj.put(Config.UUID, mAndroidId);
-                dataObj.put(Config.TIME, eventTime);
-                dataObj.put(Config.SDK_VERSION, lib_version);
-                dataObj.put(Config.APP_VERSION, app_version);
-                dataObj.put(Config.EVENT_TYPE, eventName);
-                // dataObj.put("type", eventType.getEventType());
-                //拿到properties中的参数，按照自己的格式上报
-                String screenName = properties.optString(AopConstants.SCREEN_NAME);
+                String screenName = properties == null ? "" : properties.optString(AopConstants.SCREEN_NAME);
+                //获取上一步缓存的screenname
+                if (TextUtils.isEmpty(screenName)) {
+                    screenName = mScreenName;
+                } else {
+                    mScreenName = screenName;
+                }
                 dataObj.put(Config.PATH, screenName);
-
-
                 //获取element属性
-                String elementId = properties.optString(AopConstants.ELEMENT_ID);
-                String elementType = properties.optString(AopConstants.ELEMENT_TYPE);
-                String elementContent = properties.optString(AopConstants.ELEMENT_CONTENT);
-                String elementSelector = properties.optString(AopConstants.ELEMENT_SELECTOR);
-                String elementPosition = properties.optString(AopConstants.ELEMENT_POSITION);
+                String elementId = properties == null ? "" : properties.optString(AopConstants.ELEMENT_ID);
+                String elementType = properties == null ? "" : properties.optString(AopConstants.ELEMENT_TYPE);
+                String elementContent = properties == null ? "" : properties.optString(AopConstants.ELEMENT_CONTENT);
+                String elementSelector = properties == null ? "" : properties.optString(AopConstants.ELEMENT_SELECTOR);
+                String elementPosition = properties == null ? "" : properties.optString(AopConstants.ELEMENT_POSITION);
                 final JSONObject elementObj = new JSONObject();
                 elementObj.put(Config.Elemet.ELEMENT_ID, elementId);
                 elementObj.put(Config.Elemet.ELEMENT_TYPE, elementType);
                 elementObj.put(Config.Elemet.ELEMENT_CONTENT, elementContent);
                 elementObj.put(Config.Elemet.ELEMENT_POSITION, elementPosition);
                 dataObj.put(Config.ELEMENT, elementObj);
+                /**设置事件类型**/
 
-                if (Config.EventName.CLICK.equals(eventName)) {
-                    dataObj.put(Config.EVENT_NAME, screenName + "/" + elementSelector);
-                } else {
-                    dataObj.put(Config.EVENT_NAME, screenName);
+                switch (eventType) {
+                    case Config.EventType.START:
+                        dataObj.put(Config.EVENT_NAME, Config.EventType.START);
+                        dataObj.put(Config.EVENT_TYPE, eventType);
+                        break;
+                    case Config.EventType.CLOSE:
+                        dataObj.put(Config.EVENT_NAME, Config.EventType.CLOSE);
+                        dataObj.put(Config.EVENT_TYPE, eventType);
+                        try {
+                            long appEndTime = properties.getLong("event_time");
+                            eventTime = appEndTime > 0 ? appEndTime : eventTime;
+                            String appEnd_lib_version = properties.optString(Config.SDK_VERSION);
+                            String appEnd_app_version = properties.optString(Config.APP_VERSION);
+                            if (!TextUtils.isEmpty(appEnd_lib_version)) {
+                                lib_version = appEnd_lib_version;
+                            } else {
+                                properties.remove(Config.SDK_VERSION);
+                            }
+
+                            if (!TextUtils.isEmpty(appEnd_app_version)) {
+                                app_version = appEnd_app_version;
+                            } else {
+                                properties.remove(Config.APP_VERSION);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        break;
+                    case Config.EventType.VIEW:
+                        dataObj.put(Config.EVENT_NAME, screenName);
+                        dataObj.put(Config.EVENT_TYPE, eventType);
+                        break;
+                    case Config.EventType.CLICK:
+                        dataObj.put(Config.EVENT_NAME, screenName + "/" + elementSelector);
+                        dataObj.put(Config.EVENT_TYPE, eventType);
+                        break;
+                    default:
+                        //注意：由于框架限制，自定义代码埋点事件目前传进来的eventType就是eventName
+                        dataObj.put(Config.EVENT_NAME, eventType);
+                        dataObj.put(Config.EVENT_TYPE, Config.EventType.CUSTOM);
+                        try {
+                            JSONObject eventParamsObject = new JSONObject();
+                            SensorsDataUtils.mergeJSONObject(properties, eventParamsObject);
+                            dataObj.put(Config.EVENT_PARAMS,eventParamsObject);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
                 }
-
-
+                dataObj.put(Config.UUID, mAndroidId);
+                dataObj.put(Config.TIME, eventTime);
+                dataObj.put(Config.SDK_VERSION, lib_version);
+                dataObj.put(Config.APP_VERSION, app_version);
                 try {
                     SecureRandom random = new SecureRandom();
                     dataObj.put(Config.NONCE_STR, random.nextInt());
@@ -3025,22 +3050,22 @@ public class SensorsDataAPI implements ISensorsDataAPI {
                         deviceProperties.put(Config.DEVICE_ID, mDeviceInfo.get(Config.DEVICE_ID));
                     }
                 }
-                if (eventType.isTrack()) {
-                    boolean isEnterDb = isEnterDb(eventName, deviceProperties);
+                if (trackType.isTrack()) {
+                    boolean isEnterDb = isEnterDb(eventType, deviceProperties);
                     if (!isEnterDb) {
-                        SALog.d(TAG, eventName + " event can not enter database");
+                        SALog.d(TAG, eventType + " event can not enter database");
                         return;
                     }
                 }
                 dataObj.put(Config.DEVICE, deviceProperties);
 
-                if (mEventListenerList != null && eventType.isTrack()) {
+                if (mEventListenerList != null && trackType.isTrack()) {
                     for (SAEventListener eventListener : mEventListenerList) {
                         eventListener.trackEvent(dataObj);
                     }
                 }
 
-                mMessages.enqueueEventMessage(eventType.getEventType(), dataObj);
+                mMessages.enqueueEventMessage(trackType.getEventType(), dataObj);
                 if (SALog.isLogEnabled()) {
                     SALog.i(TAG, "track event:\n" + JSONUtils.formatJson(dataObj.toString()));
                 }
@@ -3405,13 +3430,13 @@ public class SensorsDataAPI implements ISensorsDataAPI {
             }
 
             switch (eventName) {
-                case Config.EventName.START:
+                case Config.EventType.START:
                     return APP_START;
-                case Config.EventName.CLOSE:
+                case Config.EventType.CLOSE:
                     return APP_END;
-                case Config.EventName.CLICK:
+                case Config.EventType.CLICK:
                     return APP_CLICK;
-                case Config.EventName.VIEW:
+                case Config.EventType.VIEW:
                     return APP_VIEW_SCREEN;
                 default:
                     break;
@@ -3423,10 +3448,10 @@ public class SensorsDataAPI implements ISensorsDataAPI {
         static boolean isAutoTrackType(String eventName) {
             if (!TextUtils.isEmpty(eventName)) {
                 switch (eventName) {
-                    case Config.EventName.START:
-                    case Config.EventName.CLOSE:
-                    case Config.EventName.CLICK:
-                    case Config.EventName.VIEW:
+                    case Config.EventType.START:
+                    case Config.EventType.CLOSE:
+                    case Config.EventType.CLICK:
+                    case Config.EventType.VIEW:
                         return true;
                     default:
                         break;

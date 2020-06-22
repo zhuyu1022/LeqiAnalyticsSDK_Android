@@ -5,6 +5,7 @@ apply plugin: 'kotlin-android'
 //apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.novoda.bintray-release'
 
+//对应神策官方的版本  不是实际得版本，这里只是为了配合神策插件使用
 version = "4.1.0"
 def min_plugin_version = "3.0.0"
 
@@ -18,7 +19,8 @@ android {
         minSdkVersion 9
         targetSdkVersion 29
         versionCode 1
-        versionName "0.0.3"
+        //这才是我们实际的版本号哦
+        versionName "0.0.4"
         consumerProguardFiles 'proguard-rules.pro'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }

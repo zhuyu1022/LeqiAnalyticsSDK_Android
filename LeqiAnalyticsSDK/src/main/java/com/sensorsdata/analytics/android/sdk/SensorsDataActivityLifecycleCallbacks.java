@@ -177,7 +177,7 @@ class SensorsDataActivityLifecycleCallbacks implements Application.ActivityLifec
                             if (ChannelUtils.parseUtmFromActivity(activity, true, mSensorsDataInstance.isSaveDeepLinkInfo())) {
                                 SensorsDataUtils.mergeJSONObject(ChannelUtils.getUtmProperties(), properties);
                             }
-                            mSensorsDataInstance.trackInternal(Config.EventName.START, properties);
+                            mSensorsDataInstance.trackInternal(Config.EventType.START, properties);
                         }
 
                         try {
@@ -310,7 +310,7 @@ class SensorsDataActivityLifecycleCallbacks implements Application.ActivityLifec
                     properties.put("event_duration", duration(startTime, endTime));
                     properties.put("event_time", pausedTime);
                     ChannelUtils.mergeUtmToEndData(endDataJsonObject, properties);
-                    mSensorsDataInstance.trackInternal(Config.EventName.CLOSE, properties);
+                    mSensorsDataInstance.trackInternal(Config.EventType.CLOSE, properties);
                     mDbAdapter.commitAppEndData(""); // 保存的信息只使用一次就置空，防止后面状态错乱再次发送。
                     mSensorsDataInstance.flushSync();
                 }

@@ -31,6 +31,7 @@ import com.sensorsdata.analytics.android.sdk.PropertyBuilder
 import com.sensorsdata.analytics.android.sdk.SensorsDataAPI
 import com.sensorsdata.analytics.android.sdk.SensorsDataTrackViewOnClick
 import kotlinx.android.synthetic.main.activity_track_profile.*
+import org.json.JSONObject
 import java.util.*
 
 class TrackProfileSettingsActivity : BaseActivity() {
@@ -49,7 +50,11 @@ class TrackProfileSettingsActivity : BaseActivity() {
         when (view.id) {
             //产生一个自定义事件
             R.id.track_a_event -> {
-                SensorsDataAPI.sharedInstance(this).track("ViewProduct")
+                //SensorsDataAPI.sharedInstance(this).track("ViewProduct")
+                var jsonObject=JSONObject()
+                jsonObject.put("name1","自定义参数1")
+                jsonObject.put("name2","自定义参数2")
+                SensorsDataAPI.sharedInstance(this).track("ViewProduct",jsonObject)
             }
             R.id.track_installation -> {
                 //check permission
