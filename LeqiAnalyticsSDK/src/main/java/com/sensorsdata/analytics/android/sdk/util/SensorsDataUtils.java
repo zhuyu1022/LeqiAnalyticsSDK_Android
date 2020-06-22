@@ -604,6 +604,7 @@ public final class SensorsDataUtils {
      * @param number 卡槽
      * @return 设备唯一标识
      */
+    @SuppressLint("HardwareIds")
     private static String getDeviceID(Context context, int number) {
         String deviceId = "";
         try {
