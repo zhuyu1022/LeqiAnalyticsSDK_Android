@@ -1,14 +1,13 @@
-![logo](https://opensource.sensorsdata.cn/wp-content/uploads/logo.png)
+![logo](https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1371754600,2168804107&fm=15&gp=0.jpg)
 <br><br>
 [![License](https://img.shields.io/github/license/sensorsdata/sa-sdk-android.svg)](https://github.com/sensorsdata/sa-sdk-android/blob/master/LICENSE)
 [![GitHub release](https://img.shields.io/github/tag/sensorsdata/sa-sdk-android.svg?label=release)](https://github.com/sensorsdata/sa-sdk-android/releases)
 [![GitHub release date](https://img.shields.io/github/release-date/sensorsdata/sa-sdk-android.svg)](https://github.com/sensorsdata/sa-sdk-android/releases)
 
-## 神策简介
+## 乐骐简介
 
-[**神策数据**](https://www.sensorsdata.cn/)
-（Sensors Data），隶属于神策网络科技（北京）有限公司，是一家专业的大数据分析服务公司，大数据分析行业开拓者，为客户提供深度用户行为分析平台、以及专业的咨询服务和行业解决方案，致力于帮助客户实现数据驱动。神策数据立足大数据及用户行为分析的技术与实践前沿，业务现已覆盖以互联网、金融、零售快消、高科技、制造等为代表的十多个主要行业、并可支持企业多个职能部门。公司总部在北京，并在上海、深圳、合肥、武汉等地拥有本地化的服务团队，覆盖东区及南区市场；公司拥有专业的服务团队，为客户提供一对一的客户服务。公司在大数据领域积累的核心关键技术，包括在海量数据采集、存储、清洗、分析挖掘、可视化、智能应用、安全与隐私保护等领域。 [**More**](https://www.sensorsdata.cn/about/aboutus.html)
-
+[**乐骐科技**](https://www.leqi.us/)
+无锡乐骐科技有限公司 [1-2]  主要业务是计算机视觉领域研发工作，包括人脸识别，人脸属性分析、人体/车体检测/识别及行为分析、图像和视频检索、文字识别、运动追踪。多个成功项目经验：海量人像快速检索系统、商场客流量统计分析系统、公交客流统计分析、智能视频监控系统等。
 
 ## SDK 简介
 
