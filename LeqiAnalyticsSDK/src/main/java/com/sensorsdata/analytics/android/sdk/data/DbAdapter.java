@@ -486,7 +486,7 @@ public class DbAdapter {
 
             if (c != null) {
                 StringBuilder dataBuilder = new StringBuilder();
-                final String flush_time = ",\"_flush_time\":";
+                //final String flush_time = ",\"_flush_time\":";
                 String suffix = ",";
                 dataBuilder.append("[");
                 String keyData, crc, content;
@@ -509,8 +509,8 @@ public class DbAdapter {
                                 keyData = content;
                             }
                             dataBuilder.append(keyData, 0, keyData.length() - 1)
-                                    .append(flush_time)
-                                    .append(System.currentTimeMillis())
+                                    //.append(flush_time)
+                                   // .append(System.currentTimeMillis())
                                     .append("}").append(suffix);
                         }
                     } catch (Exception e) {

@@ -2513,11 +2513,11 @@ public class SensorsDataAPI implements ISensorsDataAPI {
         this.mEnableNetworkRequest = isRequest;
     }
 
-    DebugMode getDebugMode() {
+    public  DebugMode getDebugMode() {
         return mDebugMode;
     }
 
-    void setDebugMode(DebugMode debugMode) {
+  public   void setDebugMode(DebugMode debugMode) {
         mDebugMode = debugMode;
         if (debugMode == DebugMode.DEBUG_OFF) {
             enableLog(false);
@@ -2945,7 +2945,7 @@ public class SensorsDataAPI implements ISensorsDataAPI {
                     return;
                 }
                 //这里用我们自己的sdk version 不用神策的
-                String lib_version = "" + BuildConfig.VERSION_CODE;
+                int lib_version =  BuildConfig.VERSION_CODE;
                 String app_version = AppInfoUtils.getAppVersionName(mContext);
                 long eventTime = System.currentTimeMillis();
                 // SensorsDataUtils.mergeJSONObject(properties, deviceProperties);
@@ -2985,14 +2985,13 @@ public class SensorsDataAPI implements ISensorsDataAPI {
                         try {
                             long appEndTime = properties.getLong("event_time");
                             eventTime = appEndTime > 0 ? appEndTime : eventTime;
-                            String appEnd_lib_version = properties.optString(Config.SDK_VERSION);
+                            int appEnd_lib_version = properties.optInt(Config.SDK_VERSION);
                             String appEnd_app_version = properties.optString(Config.APP_VERSION);
-                            if (!TextUtils.isEmpty(appEnd_lib_version)) {
+                            if (appEnd_lib_version!=0) {
                                 lib_version = appEnd_lib_version;
                             } else {
                                 properties.remove(Config.SDK_VERSION);
                             }
-
                             if (!TextUtils.isEmpty(appEnd_app_version)) {
                                 app_version = appEnd_app_version;
                             } else {
@@ -3029,8 +3028,8 @@ public class SensorsDataAPI implements ISensorsDataAPI {
                 dataObj.put(Config.SDK_VERSION, lib_version);
                 dataObj.put(Config.APP_VERSION, app_version);
                 try {
-                    SecureRandom random = new SecureRandom();
-                    dataObj.put(Config.NONCE_STR, random.nextInt());
+                    //32位随机数
+                    dataObj.put(Config.NONCE_STR, SensorsDataUtils.getRandomString(32));
                 } catch (Exception e) {
                     // ignore
                 }

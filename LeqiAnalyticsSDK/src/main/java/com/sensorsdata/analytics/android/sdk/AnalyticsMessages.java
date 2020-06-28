@@ -151,7 +151,9 @@ class AnalyticsMessages {
                             .getFlushBulkSize()) {
                         mWorker.runMessage(m);
                     } else {
+
                         final int interval = SensorsDataAPI.sharedInstance(mContext).getFlushInterval();
+                        SALog.i(TAG, "间隔"+interval+"秒 后发送");
                         mWorker.runMessageOnce(m, interval);
                     }
                 }
@@ -302,11 +304,11 @@ class AnalyticsMessages {
         try {
             SALog.i(TAG, path);
 
-            if (path.endsWith("/")) {
-                path = path + "event/android";
-            } else {
-                path = path + "/event/android";
-            }
+//            if (path.endsWith("/")) {
+//                path = path + "event/android";
+//            } else {
+//                path = path + "/event/android";
+//            }
             final URL url = new URL(path);
             connection = (HttpURLConnection) url.openConnection();
             if (connection == null) {
