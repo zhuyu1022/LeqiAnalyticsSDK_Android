@@ -57,6 +57,21 @@ dependencies {
 
 - **2.1 基本配置**
 
+上传地址说明：
+
+https://big-data.leqi.us/api/<app_key>/event/<sdk_type> 生产环境
+https://big-data.leqi.us/api/<app_key>/event/<sdk_type>/debug 调试使用
+
+app_key为该应用的标识
+9e66e6c0  智能证件照
+ca81b25c  最美
+d0c02ba2  证件照制作
+d41ba5c2  乐骐证件照在线拍摄
+e09f591a  长宽相机
+
+sdk_typeSDK类型 安卓集成就传入android
+
+
 ```
         //配置上传地址
         SAConfigOptions configOptions = new SAConfigOptions(SA_SERVER_URL);
@@ -72,6 +87,9 @@ dependencies {
         SensorsDataAPI.sharedInstance().setFlushInterval(15000);
 ```
 
+
+```
+
 - **2.2 用户登录，设置userid**
 
 ```
@@ -79,6 +97,7 @@ SensorsDataAPI.sharedInstance().login("登录 ID");
 
 ```
 - **2.3 代码埋点追踪事件**
+
 ```
 try {
     JSONObject properties = new JSONObject();
@@ -89,6 +108,7 @@ try {
     e.printStackTrace();
 }
 ```
+
 - **2.4 其他功能测试中....**
 
 
