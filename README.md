@@ -55,22 +55,21 @@ dependencies {
 
 ## 2.使用
 
-- **2.1 基本配置**
+- **2.1 上传地址说明**
 
-上传地址说明：
-
+```
 https://big-data.leqi.us/api/<app_key>/event/<sdk_type> 生产环境
 https://big-data.leqi.us/api/<app_key>/event/<sdk_type>/debug 调试使用
-
-app_key为该应用的标识
+app_key为该应用的标识  
+sdk_typeSDK类型 安卓集成就传入android
 9e66e6c0  智能证件照
 ca81b25c  最美
 d0c02ba2  证件照制作
 d41ba5c2  乐骐证件照在线拍摄
 e09f591a  长宽相机
+```
 
-sdk_typeSDK类型 安卓集成就传入android
-
+- **2.2 基本配置**
 
 ```
         //配置上传地址
@@ -88,15 +87,13 @@ sdk_typeSDK类型 安卓集成就传入android
 ```
 
 
-```
-
-- **2.2 用户登录，设置userid**
+- **2.3 用户登录，设置userid**
 
 ```
 SensorsDataAPI.sharedInstance().login("登录 ID");
 
 ```
-- **2.3 代码埋点追踪事件**
+- **2.4 代码埋点追踪事件**
 
 ```
 try {
@@ -109,29 +106,10 @@ try {
 }
 ```
 
-- **2.4 其他功能测试中....**
-
-
-
+- **2.5 其他功能测试中....**
 
 
 ## 规划
 
 可参考 [ROADMAP](ROADMAP.md).
 
-
-## License
-
-Copyright 2015－2020 Sensors Data Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
