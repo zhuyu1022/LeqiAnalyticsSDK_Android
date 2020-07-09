@@ -58,33 +58,43 @@ dependencies {
 - **2.1 上传地址说明**
 
 ```
-https://big-data.leqi.us/api/<app_key>/event/<sdk_type> 生产环境
-https://big-data.leqi.us/api/<app_key>/event/<sdk_type>/debug 调试使用
-app_key   为该应用的标识  
-sdk_type  SDK类型 安卓集成就传入android
+https://big-data.leqi.us/api/<app_key>/event/android 生产环境
+https://big-data.leqi.us/api/<app_key>/event/<sdk_type>/debug 调试使用，这种情况上报接口返回http code可能不是200，线上环境不要接入
+
+app_key   为该应用的标识 
+
+9e66e6c0  智能证件照
+ca81b25c  最美
+d0c02ba2  证件照制作
+d41ba5c2  乐骐证件照在线拍摄
+e09f591a  长宽相机
+c0681a4c  专业证件照
+b699b94c  一寸证件照制作
+
 
 ```
 
 - **2.2 基本配置**
 
 ```
-                //配置上传地址
-                val url = "https://big-data.leqi.us/api/e09f591a/event/android/debug"
-                val configOptions = SAConfigOptions(url)
-                // 打开自动采集, 并指定追踪哪些Track 事件，以下为全采集
-                configOptions.setAutoTrackEventType(
-                    SensorsAnalyticsAutoTrackEventType.APP_START or
-                            SensorsAnalyticsAutoTrackEventType.APP_END or
-                            SensorsAnalyticsAutoTrackEventType.APP_VIEW_SCREEN or
-                            SensorsAnalyticsAutoTrackEventType.APP_CLICK
-                )
-                SensorsDataAPI.startWithConfigOptions(this, configOptions)
-                //自动追踪 Fragment 的 ViewScreen 事件
-                SensorsDataAPI.sharedInstance(this).trackFragmentAppViewScreen()
-                //配置上传间隔，默认值15秒
-                SensorsDataAPI.sharedInstance().flushInterval = 20000
-                //是否打印日志，默认false
-                SensorsDataAPI.sharedInstance().enableLog(true)
+//配置上传地址
+val url = "https://big-data.leqi.us/api/你的appkey/event/android"
+val configOptions = SAConfigOptions(url)
+// 打开自动采集, 并指定追踪哪些Track 事件，以下为全采集
+configOptions.setAutoTrackEventType(
+SensorsAnalyticsAutoTrackEventType.APP_START or
+        SensorsAnalyticsAutoTrackEventType.APP_END or
+        SensorsAnalyticsAutoTrackEventType.APP_VIEW_SCREEN or
+        SensorsAnalyticsAutoTrackEventType.APP_CLICK
+)
+SensorsDataAPI.startWithConfigOptions(this, configOptions)
+//自动追踪 Fragment 的 ViewScreen 事件
+SensorsDataAPI.sharedInstance(this).trackFragmentAppViewScreen()
+//配置上传间隔，默认值15秒
+SensorsDataAPI.sharedInstance().flushInterval = 20000
+//是否打印日志，默认false
+SensorsDataAPI.sharedInstance().enableLog(true)
+
 ```
 
 
