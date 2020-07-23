@@ -3007,7 +3007,13 @@ public class SensorsDataAPI implements ISensorsDataAPI {
                         dataObj.put(Config.EVENT_TYPE, eventType);
                         break;
                     case Config.EventType.CLICK:
-                        dataObj.put(Config.EVENT_NAME, screenName + "/" + elementSelector);
+                        StringBuilder eventName = new StringBuilder();
+                        eventName.append(screenName);
+                        if (!TextUtils.isEmpty(elementType))  eventName.append("-").append(elementType);
+                        if (!TextUtils.isEmpty(elementContent))  eventName.append("-").append(elementContent);
+                        if (!TextUtils.isEmpty(elementId))  eventName.append("-").append(elementId);
+                        if (!TextUtils.isEmpty(elementPosition))  eventName.append("-").append(elementPosition);
+                        dataObj.put(Config.EVENT_NAME, eventName.toString());
                         dataObj.put(Config.EVENT_TYPE, eventType);
                         break;
                     default:

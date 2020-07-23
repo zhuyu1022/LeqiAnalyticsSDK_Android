@@ -20,7 +20,7 @@ android {
         targetSdkVersion 29
         versionCode 1
         //这才是我们实际的版本号哦
-        versionName "0.0.4"
+        versionName "0.0.6"
         consumerProguardFiles 'proguard-rules.pro'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
