@@ -27,8 +27,8 @@ public class MyApplication extends Application {
      * Sensors Analytics 采集数据的地址
      */
     // private final static String SA_SERVER_URL = "https://sdkdebugtest.datasink.sensorsdata.cn/sa?project=default&token=cfb8b60e42e0ae9b";
-    //private final static String SA_SERVER_URL = "https://big-data.leqi.us/api/test/event/android";
-    private final static String SA_SERVER_URL = "https://big-data.leqi.us/api/changkuan_app/event/android/debug";
+    private final static String SA_SERVER_URL = "https://big-data.leqi.us/api/test/event/android";
+   // private final static String SA_SERVER_URL = "https://big-data.leqi.us/api/changkuan_app/event/android/debug";
 
     //    https://big-data.leqi.us/api/<app_key>/event/<sdk_type>
 //    app_key为该应用的标识
@@ -51,6 +51,6 @@ public class MyApplication extends Application {
                 SensorsAnalyticsAutoTrackEventType.APP_CLICK);
         SensorsDataAPI.startWithConfigOptions(this, configOptions);
         SensorsDataAPI.sharedInstance(this).trackFragmentAppViewScreen();
-        SensorsDataAPI.sharedInstance().setFlushInterval(5000);
+        SensorsDataAPI.sharedInstance().setFlushInterval(20000);
     }
 }
