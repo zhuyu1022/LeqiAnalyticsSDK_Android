@@ -26,7 +26,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.3'
         //添加神策分析 android-gradle-plugin2 依赖
-        classpath 'com.sensorsdata.analytics.android:android-gradle-plugin2:3.2.4'
+        classpath 'com.sensorsdata.analytics.android:android-gradle-plugin2:3.2.9'
     }
 }
 ```
@@ -48,7 +48,7 @@ allprojects {
 apply plugin: 'com.sensorsdata.analytics.android'
 dependencies {
   ...
-   implementation 'com.github.zhuyu1022:LeqiAnalyticsSDK_Android:0.0.7'
+   implementation 'com.github.zhuyu1022:LeqiAnalyticsSDK_Android:0.0.8'
 }
 ```
 
