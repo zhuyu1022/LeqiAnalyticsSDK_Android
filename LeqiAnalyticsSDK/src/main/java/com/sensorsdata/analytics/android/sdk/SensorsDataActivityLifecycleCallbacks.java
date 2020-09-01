@@ -122,12 +122,6 @@ class SensorsDataActivityLifecycleCallbacks implements Application.ActivityLifec
     @Override
     public void onActivityCreated(Activity activity, Bundle bundle) {
         SensorsDataUtils.handleSchemeUrl(activity, activity.getIntent());
-        if (isMultiProcess) {
-            startActivityCount = mDbAdapter.getActivityCount();
-            mDbAdapter.commitActivityCount(++startActivityCount);
-        } else {
-            ++startActivityCount;
-        }
     }
 
     @Override
@@ -135,8 +129,14 @@ class SensorsDataActivityLifecycleCallbacks implements Application.ActivityLifec
         try {
             activityProperty = AopUtil.buildTitleNoAutoTrackerProperties(activity);
             SensorsDataUtils.mergeJSONObject(activityProperty, endDataProperty);
-
-            SALog.i(TAG, "startActivityCount:"+startActivityCount);
+            if (isMultiProcess) {
+                startActivityCount = mDbAdapter.getActivityCount();
+                mDbAdapter.commitActivityCount(++startActivityCount);
+            } else {
+                ++startActivityCount;
+            }
+           // SALog.i(TAG, "currentActivityName:"+  activity.getComponentName().getClassName());
+            SALog.i(TAG, "launchActivityName:"+  mSensorsDataInstance.getLaunchActivityName());
             // 如果是第一个页面
             if (startActivityCount == 1) {
                 if (mSensorsDataInstance.isSaveDeepLinkInfo()) {// 保存 utm 信息时,在 endData 中合并保存的 latestUtm 信息。
@@ -168,7 +168,8 @@ class SensorsDataActivityLifecycleCallbacks implements Application.ActivityLifec
                     mSensorsDataInstance.pullSDKConfigFromServer();
 
                     try {
-                        if (mSensorsDataInstance.isAutoTrackEnabled() && !mSensorsDataInstance.isAutoTrackEventTypeIgnored(SensorsDataAPI.AutoTrackEventType.APP_START)) {
+
+                        if (activity.getComponentName().getClassName().equals(mSensorsDataInstance.getLaunchActivityName())&&mSensorsDataInstance.isAutoTrackEnabled() && !mSensorsDataInstance.isAutoTrackEventTypeIgnored(SensorsDataAPI.AutoTrackEventType.APP_START)) {
                             if (firstStart) {
                                 mFirstStart.commit(false);
                             }
@@ -261,6 +262,15 @@ class SensorsDataActivityLifecycleCallbacks implements Application.ActivityLifec
             if (startTimerCount == 0) {
                 SensorsDataTimer.getInstance().shutdownTimerTask();
             }
+
+            if (mSensorsDataInstance.isMultiProcess()) {
+                startActivityCount = mDbAdapter.getActivityCount();
+                startActivityCount = startActivityCount > 0 ? --startActivityCount : 0;
+                mDbAdapter.commitActivityCount(startActivityCount);
+            } else {
+                startActivityCount--;
+            }
+
             /*
              * 为了处理跨进程之间跳转 Crash 的情况，由于在 ExceptionHandler 中进行重置，
              * 所以会引起的计数器小于 0 的情况。
@@ -280,17 +290,6 @@ class SensorsDataActivityLifecycleCallbacks implements Application.ActivityLifec
 
     @Override
     public void onActivityDestroyed(Activity activity) {
-        try {
-            if (mSensorsDataInstance.isMultiProcess()) {
-                startActivityCount = mDbAdapter.getActivityCount();
-                startActivityCount = startActivityCount > 0 ? --startActivityCount : 0;
-                mDbAdapter.commitActivityCount(startActivityCount);
-            } else {
-                startActivityCount--;
-            }
-        } catch (Exception ex) {
-            SALog.printStackTrace(ex);
-        }
     }
 
     /**

@@ -19,9 +19,9 @@ android {
         minSdkVersion 9
         targetSdkVersion 29
         //这个是给后台看的版本号哦
-        versionCode 7
+        versionCode 8
         //这才是我们实际的版本号哦
-        versionName "0.0.7"
+        versionName "0.0.8"
         consumerProguardFiles 'proguard-rules.pro'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }

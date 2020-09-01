@@ -70,7 +70,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -168,7 +167,9 @@ public class SensorsDataAPI implements ISensorsDataAPI {
     private IFragmentAPI mFragmentAPI;
     private String mScreenName;
 
-    //private
+    //启动页activity名称
+    private String mLaunchActivityName;
+
     SensorsDataAPI() {
         mContext = null;
         mMessages = null;
@@ -208,7 +209,7 @@ public class SensorsDataAPI implements ISensorsDataAPI {
         DbAdapter.getInstance(context, packageName);
         mMessages = AnalyticsMessages.getInstance(mContext);
         mAndroidId = SensorsDataUtils.getAndroidID(mContext);
-
+        mLaunchActivityName=AppInfoUtils.getLauncherActivity(mContext);
         //先从缓存中读取 SDKConfig
         applySDKConfigFromCache();
 
@@ -2288,6 +2289,15 @@ public class SensorsDataAPI implements ISensorsDataAPI {
         }
     }
 
+    /**
+     * 获取启动页activity名称
+     * @return
+     */
+    @Override
+    public String getLaunchActivityName() {
+        return mLaunchActivityName;
+    }
+
     @Override
     public void deleteAll() {
         mMessages.deleteAll();
@@ -2512,11 +2522,11 @@ public class SensorsDataAPI implements ISensorsDataAPI {
         this.mEnableNetworkRequest = isRequest;
     }
 
-    public  DebugMode getDebugMode() {
+    public DebugMode getDebugMode() {
         return mDebugMode;
     }
 
-  public   void setDebugMode(DebugMode debugMode) {
+    public void setDebugMode(DebugMode debugMode) {
         mDebugMode = debugMode;
         if (debugMode == DebugMode.DEBUG_OFF) {
             enableLog(false);
@@ -2785,7 +2795,7 @@ public class SensorsDataAPI implements ISensorsDataAPI {
                     return;
                 }
                 //这里用我们自己的sdk version 不用神策的
-                int lib_version =  BuildConfig.VERSION_CODE;
+                int lib_version = BuildConfig.VERSION_CODE;
                 String app_version = AppInfoUtils.getAppVersionName(mContext);
                 long eventTime = System.currentTimeMillis();
                 // SensorsDataUtils.mergeJSONObject(properties, deviceProperties);
@@ -2827,7 +2837,7 @@ public class SensorsDataAPI implements ISensorsDataAPI {
                             eventTime = appEndTime > 0 ? appEndTime : eventTime;
                             int appEnd_lib_version = properties.optInt(Config.SDK_VERSION);
                             String appEnd_app_version = properties.optString(Config.APP_VERSION);
-                            if (appEnd_lib_version!=0) {
+                            if (appEnd_lib_version != 0) {
                                 lib_version = appEnd_lib_version;
                             } else {
                                 properties.remove(Config.SDK_VERSION);
@@ -2849,10 +2859,13 @@ public class SensorsDataAPI implements ISensorsDataAPI {
                     case Config.EventType.CLICK:
                         StringBuilder eventName = new StringBuilder();
                         eventName.append(screenName);
-                        if (!TextUtils.isEmpty(elementType))  eventName.append("-").append(elementType);
-                        if (!TextUtils.isEmpty(elementContent))  eventName.append("-").append(elementContent);
-                        if (!TextUtils.isEmpty(elementId))  eventName.append("-").append(elementId);
-                        if (!TextUtils.isEmpty(elementPosition))  eventName.append("-").append(elementPosition);
+                        if (!TextUtils.isEmpty(elementType))
+                            eventName.append("-").append(elementType);
+                        if (!TextUtils.isEmpty(elementContent))
+                            eventName.append("-").append(elementContent);
+                        if (!TextUtils.isEmpty(elementId)) eventName.append("-").append(elementId);
+//                        if (!TextUtils.isEmpty(elementPosition))
+//                            eventName.append("-").append(elementPosition);
                         dataObj.put(Config.EVENT_NAME, eventName.toString());
                         dataObj.put(Config.EVENT_TYPE, eventType);
                         break;
@@ -2863,7 +2876,7 @@ public class SensorsDataAPI implements ISensorsDataAPI {
                         try {
                             JSONObject eventParamsObject = new JSONObject();
                             SensorsDataUtils.mergeJSONObject(properties, eventParamsObject);
-                            dataObj.put(Config.EVENT_PARAMS,eventParamsObject);
+                            dataObj.put(Config.EVENT_PARAMS, eventParamsObject);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

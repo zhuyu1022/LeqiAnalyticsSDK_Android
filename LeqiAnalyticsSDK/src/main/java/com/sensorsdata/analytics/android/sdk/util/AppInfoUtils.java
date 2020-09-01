@@ -19,10 +19,14 @@ package com.sensorsdata.analytics.android.sdk.util;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
 
 import com.sensorsdata.analytics.android.sdk.SALog;
 
@@ -147,5 +151,27 @@ public class AppInfoUtils {
             SALog.printStackTrace(e);
         }
         return null;
+    }
+
+
+    /**
+     * 获取启动activity的名称
+     *
+     * @return the name of launcher activity
+     */
+    public static String getLauncherActivity(Context context ) {
+
+
+        String pkg=getProcessName(context);
+        if (pkg.isEmpty()) return "";
+        Intent intent = new Intent(Intent.ACTION_MAIN, null);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        intent.setPackage(pkg);
+        PackageManager pm = context.getPackageManager();
+        List<ResolveInfo> info = pm.queryIntentActivities(intent, 0);
+        if (info == null || info.size() == 0) {
+            return "";
+        }
+        return info.get(0).activityInfo.name;
     }
 }
