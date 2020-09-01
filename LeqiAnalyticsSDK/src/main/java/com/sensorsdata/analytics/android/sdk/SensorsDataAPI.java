@@ -2862,8 +2862,8 @@ public class SensorsDataAPI implements ISensorsDataAPI {
                         if (!TextUtils.isEmpty(elementType))
                             eventName.append("-").append(elementType);
                         if (!TextUtils.isEmpty(elementContent))
-                            eventName.append("-").append(elementContent);
-                        if (!TextUtils.isEmpty(elementId)) eventName.append("-").append(elementId);
+                            eventName.append("{").append(elementContent).append("}");
+                        if (!TextUtils.isEmpty(elementId)) eventName.append(elementId);
 //                        if (!TextUtils.isEmpty(elementPosition))
 //                            eventName.append("-").append(elementPosition);
                         dataObj.put(Config.EVENT_NAME, eventName.toString());
