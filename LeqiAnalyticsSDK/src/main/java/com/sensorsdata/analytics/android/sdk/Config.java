@@ -22,7 +22,7 @@ public class Config {
     public static final String PACKAGE_NAME = "package_name"; //APP包名
     public static final String APP_VERSION = "app_version";   //APP版本号
     public static final String EVENT_PARAMS = "event_params";   //事件可携带的参数,例如可以是接口的返回数据等
-
+    public static final String CHANNEL = "channel";   //APP渠道名称
 
     public static final String ELEMENT = "element";           //控件信息
 

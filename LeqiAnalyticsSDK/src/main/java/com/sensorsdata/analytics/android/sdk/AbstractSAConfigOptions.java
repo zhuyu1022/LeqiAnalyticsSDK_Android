@@ -45,6 +45,10 @@ abstract class AbstractSAConfigOptions {
      * 数据上报服务器地址
      */
     String mServerUrl;
+    /**
+     * 渠道名
+     */
+    String mChannel;
 
     /**
      * AutoTrack 类型

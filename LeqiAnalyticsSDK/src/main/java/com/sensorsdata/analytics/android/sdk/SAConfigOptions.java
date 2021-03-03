@@ -93,6 +93,18 @@ public final class SAConfigOptions extends AbstractSAConfigOptions {
     }
 
     /**
+     * 设置渠道名称
+     *
+     * @param channel，渠道名称
+     * @return SAOptionsConfig
+     */
+    public SAConfigOptions setChannel(String channel) {
+        this.mChannel = channel;
+        return this;
+    }
+
+
+    /**
      * 设置 AutoTrackEvent 的类型，可通过 '|' 进行连接
      *
      * @param autoTrackEventType 开启的 AutoTrack 类型

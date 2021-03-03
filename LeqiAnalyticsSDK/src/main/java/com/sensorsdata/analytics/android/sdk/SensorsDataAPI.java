@@ -396,7 +396,7 @@ public class SensorsDataAPI implements ISensorsDataAPI {
         int[] size = DeviceUtils.getDeviceSize(mContext);
         deviceInfo.put(Config.SCREEN_WIDTH, size[0]);
         deviceInfo.put(Config.SCREEN_HEIGHT, size[1]);
-
+        deviceInfo.put(Config.CHANNEL, mSAConfigOptions.mChannel);//渠道名称
         if (!mDisableTrackDeviceId && !TextUtils.isEmpty(mAndroidId)) {
             deviceInfo.put(Config.DEVICE_ID, mAndroidId);
         }
@@ -1821,10 +1821,10 @@ public class SensorsDataAPI implements ISensorsDataAPI {
             @Override
             public void run() {
                 try {
-                    JSONObject _properties = ChannelUtils.checkOrSetChannelCallbackEvent(getConfigOptions().isAutoAddChannelCallbackEvent, eventName, properties, mContext);
+                 //   JSONObject _properties = ChannelUtils.checkOrSetChannelCallbackEvent(getConfigOptions().isAutoAddChannelCallbackEvent, eventName, properties, mContext);
 
 
-                    trackEvent(EventType.TRACK, eventName, _properties, null);
+                    trackEvent(EventType.TRACK, eventName, properties, null);
                 } catch (Exception e) {
                     SALog.printStackTrace(e);
                 }
@@ -1980,8 +1980,8 @@ public class SensorsDataAPI implements ISensorsDataAPI {
             @Override
             public void run() {
                 try {
-                    JSONObject _properties = ChannelUtils.checkOrSetChannelCallbackEvent(getConfigOptions().isAutoAddChannelCallbackEvent, eventName, properties, mContext);
-                    trackEvent(EventType.TRACK, eventName, _properties, null);
+                   // JSONObject _properties = ChannelUtils.checkOrSetChannelCallbackEvent(getConfigOptions().isAutoAddChannelCallbackEvent, eventName, properties, mContext);
+                    trackEvent(EventType.TRACK, eventName, properties, null);
                 } catch (Exception e) {
                     SALog.printStackTrace(e);
                 }
@@ -2752,43 +2752,11 @@ public class SensorsDataAPI implements ISensorsDataAPI {
                         JSONObject superProperties = mSuperProperties.get();
                         SensorsDataUtils.mergeJSONObject(superProperties, deviceProperties);
                     }
-//
-//                    try {
-//                        if (mDynamicSuperProperties != null) {
-//                            JSONObject dynamicSuperProperties = mDynamicSuperProperties.getDynamicSuperProperties();
-//                            if (dynamicSuperProperties != null) {
-//                                assertPropertyTypes(dynamicSuperProperties);
-//                                SensorsDataUtils.mergeJSONObject(dynamicSuperProperties, deviceProperties);
-//                            }
-//                        }
-//                    } catch (Exception e) {
-//                        SALog.printStackTrace(e);
-//                    }
-
                     // 当前网络状况
                     String networkType = NetworkUtils.networkType(mContext);
                     deviceProperties.put(Config.WIFI, "WIFI".equals(networkType));
                     deviceProperties.put(Config.NETWORK_TYPE, networkType);
 
-                    // GPS
-//                    try {
-//                        if (mGPSLocation != null) {
-//                            sendProperties.put("$latitude", mGPSLocation.getLatitude());
-//                            sendProperties.put("$longitude", mGPSLocation.getLongitude());
-//                        }
-//                    } catch (Exception e) {
-//                        com.sensorsdata.analytics.android.sdk.SALog.printStackTrace(e);
-//                    }
-//
-//                    // 屏幕方向
-//                    try {
-//                        String screenOrientation = getScreenOrientation();
-//                        if (!TextUtils.isEmpty(screenOrientation)) {
-//                            sendProperties.put("$screen_orientation", screenOrientation);
-//                        }
-//                    } catch (Exception e) {
-//                        com.sensorsdata.analytics.android.sdk.SALog.printStackTrace(e);
-//                    }
                 } else if (trackType.isProfile()) {
                     deviceProperties = new JSONObject();
                 } else {

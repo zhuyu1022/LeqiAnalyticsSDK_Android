@@ -377,32 +377,5 @@ public class ChannelUtils {
         }
     }
 
-    /**
-     * 判断是否需要添加渠道回调事件，如果需要则添加。
-     *
-     * @param isAutoAddChannelCallbackEvent 是否开启
-     * @param eventName 事件名
-     * @param properties 属性
-     * @param context Context
-     * @return JSONObject
-     */
-    public static JSONObject checkOrSetChannelCallbackEvent(boolean isAutoAddChannelCallbackEvent, String eventName, JSONObject properties, Context context) {
-        if (isAutoAddChannelCallbackEvent) {
-            if (properties == null) {
-                properties = new JSONObject();
-            }
-            try {
-                boolean isFirst = DbAdapter.getInstance().isFirstChannelEvent(eventName);
-                properties.put("$is_channel_callback_event", isFirst);
-                if (isFirst && context != null && !ChannelUtils.hasUtmProperties(properties)) {
-                    ChannelUtils.mergeUtmByMetaData(context, properties);
-                    DbAdapter.getInstance().addChannelEvent(eventName);
-                }
-                properties.put("$channel_device_info", "1");
-            } catch (JSONException e) {
-                SALog.printStackTrace(e);
-            }
-        }
-        return properties;
-    }
+
 }

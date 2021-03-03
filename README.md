@@ -48,7 +48,7 @@ allprojects {
 apply plugin: 'com.sensorsdata.analytics.android'
 dependencies {
   ...
-   implementation 'com.github.zhuyu1022:LeqiAnalyticsSDK_Android:0.0.9'
+   implementation 'com.github.zhuyu1022:LeqiAnalyticsSDK_Android:1.0.0'
 }
 ```
 
@@ -59,7 +59,7 @@ dependencies {
 
 ```
 https://big-data.leqi.us/api/<app_key>/event/android 生产环境
-https://big-data.leqi.us/api/<app_key>/event/<sdk_type>/debug 调试使用，这种情况上报接口返回http code可能不是200，线上环境不要接入
+https://big-data.leqi.us/api/<app_key>/event/android/debug 调试使用，这种情况上报接口返回http code可能不是200，线上环境不要接入
 
 app_key   为该应用的标识 
 
@@ -80,6 +80,8 @@ b699b94c  一寸证件照制作
 //配置上传地址
 val url = "https://big-data.leqi.us/api/你的appkey/event/android"
 val configOptions = SAConfigOptions(url)
+ //传入渠道名称
+configOptions.setChannel(BuildConfig.FLAVOR_market)
 // 打开自动采集, 并指定追踪哪些Track 事件，以下为全采集
 configOptions.setAutoTrackEventType(
 SensorsAnalyticsAutoTrackEventType.APP_START or
@@ -97,14 +99,20 @@ SensorsDataAPI.sharedInstance().enableLog(true)
 
 ```
 
+- **2.3 配置渠道名称**
 
-- **2.3 用户登录，设置userid**
+```
+configOptions.setChannel(BuildConfig.FLAVOR_market)
+
+```
+
+- **2.4 用户登录，设置userid**
 
 ```
 SensorsDataAPI.sharedInstance().login("登录 ID")
 
 ```
-- **2.4 代码埋点追踪事件**
+- **2.5 代码埋点追踪事件**
 
 ```
 try {
@@ -122,5 +130,4 @@ try {
 
 ## 规划
 
-可参考 [ROADMAP](ROADMAP.md).
-
+没得了

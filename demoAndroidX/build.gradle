@@ -34,6 +34,26 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    //vest 第一维度  market 第二维度
+    flavorDimensions "vest", "market"
+    productFlavors {
+        DemoAndroid {
+            dimension "vest"
+        }
+        huawei {
+            dimension "market"
+        }
+        google {
+            dimension "market"
+        }
+        oppo {
+            dimension "market"
+        }
+        vivo {
+            dimension "market"
+        }
+
+    }
 }
 
 dependencies {
