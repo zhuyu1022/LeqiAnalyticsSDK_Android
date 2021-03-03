@@ -115,11 +115,11 @@ SensorsDataAPI.sharedInstance().login("登录 ID")
 - **2.5 代码埋点追踪事件**
 
 ```
+//以支付为例
 try {
     JSONObject properties = new JSONObject();
-    properties.put("ProductID", 123456);                    // 设置商品 ID
-    properties.put("ProductCatalog", "Laptop Computer");    // 设置商品类别
-    SensorsDataAPI.sharedInstance().track("BuyProduct", properties);
+    properties.put("order_id", 123456);                    // 设置商品 ID
+    SensorsDataAPI.sharedInstance().track("PAID", properties);
 } catch (JSONException e) {
     e.printStackTrace();
 }
