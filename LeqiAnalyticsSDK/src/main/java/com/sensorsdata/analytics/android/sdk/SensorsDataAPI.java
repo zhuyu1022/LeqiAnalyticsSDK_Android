@@ -2646,6 +2646,10 @@ public class SensorsDataAPI implements ISensorsDataAPI {
                 } else {
                     mScreenName = screenName;
                 }
+                if (TextUtils.isEmpty(screenName)) {
+                    //不上报获取不到screenName的异常情况
+                   return;
+                }
                 dataObj.put(Config.PATH, screenName);
                 //获取element属性
                 String elementId = properties == null ? "" : properties.optString(AopConstants.ELEMENT_ID);
