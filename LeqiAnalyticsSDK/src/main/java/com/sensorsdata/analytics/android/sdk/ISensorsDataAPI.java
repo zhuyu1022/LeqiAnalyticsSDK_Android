@@ -589,57 +589,6 @@ public interface ISensorsDataAPI extends IFragmentAPI {
      */
     void logout();
 
-    /**
-     * 记录第一次登录行为
-     * 这个接口是一个较为复杂的功能，请在使用前先阅读相关说明:
-     * http://www.sensorsdata.cn/manual/track_signup.html
-     * 并在必要时联系我们的技术支持人员。
-     * 该方法已不推荐使用，可以具体参考 {@link #login(String)} 方法
-     *
-     * @param newDistinctId 用户完成注册后生成的注册 ID
-     * @param properties 事件的属性
-     */
-    @Deprecated
-    void trackSignUp(String newDistinctId, JSONObject properties);
-
-    /**
-     * 与 {@link #trackSignUp(String, JSONObject)} 类似，无事件属性
-     * 这个接口是一个较为复杂的功能，请在使用前先阅读相关说明:
-     * http://www.sensorsdata.cn/manual/track_signup.html，
-     * 并在必要时联系我们的技术支持人员。
-     * 该方法已不推荐使用，可以具体参考 {@link #login(String)} 方法
-     *
-     * @param newDistinctId 用户完成注册后生成的注册ID
-     */
-    @Deprecated
-    void trackSignUp(String newDistinctId);
-
-    /**
-     * 用于在 App 首次启动时追踪渠道来源，并设置追踪渠道事件的属性。
-     * 这是 Sensors Analytics 进阶功能，请参考文档 https://sensorsdata.cn/manual/track_installation.html
-     *
-     * @param eventName 渠道追踪事件的名称
-     * @param properties 渠道追踪事件的属性
-     * @param disableCallback 是否关闭这次渠道匹配的回调请求
-     */
-    void trackInstallation(String eventName, JSONObject properties, boolean disableCallback);
-
-    /**
-     * 用于在 App 首次启动时追踪渠道来源，并设置追踪渠道事件的属性。
-     * 这是 Sensors Analytics 进阶功能，请参考文档 https://sensorsdata.cn/manual/track_installation.html
-     *
-     * @param eventName 渠道追踪事件的名称
-     * @param properties 渠道追踪事件的属性
-     */
-    void trackInstallation(String eventName, JSONObject properties);
-
-    /**
-     * 用于在 App 首次启动时追踪渠道来源，并设置追踪渠道事件的属性。
-     * 这是 Sensors Analytics 进阶功能，请参考文档 https://sensorsdata.cn/manual/track_installation.html
-     *
-     * @param eventName 渠道追踪事件的名称
-     */
-    void trackInstallation(String eventName);
 
     /**
      * 调用 track 接口，并附加渠道信息.
@@ -1054,22 +1003,6 @@ public interface ISensorsDataAPI extends IFragmentAPI {
      */
     void setSSLSocketFactory(SSLSocketFactory sf);
 
-    /**
-     * 设置 item
-     *
-     * @param itemType item 类型
-     * @param itemId item ID
-     * @param properties item 相关属性
-     */
-    void itemSet(String itemType, String itemId, JSONObject properties);
-
-    /**
-     * 删除 item
-     *
-     * @param itemType item 类型
-     * @param itemId item ID
-     */
-    void itemDelete(String itemType, String itemId);
 
     /**
      * 停止事件采集，注意不要随便调用，调用后会造成数据丢失。

@@ -56,21 +56,7 @@ class TrackProfileSettingsActivity : BaseActivity() {
                 jsonObject.put("name2","自定义参数2")
                 SensorsDataAPI.sharedInstance(this).track("ViewProduct",jsonObject)
             }
-            R.id.track_installation -> {
-                //check permission
-                if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                                    Manifest.permission.READ_PHONE_STATE)) {
-                        val setIntent = Intent(ACTION_APPLICATION_DETAILS_SETTINGS,
-                                Uri.fromParts("package", packageName, null))
-                        startActivityForResult(setIntent, 101)
-                    } else {
-                        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_PHONE_STATE), 123)
-                    }
-                    return
-                }
-                SensorsDataAPI.sharedInstance(this).trackInstallation("AppInstall", PropertyBuilder.newInstance().append("pKey", "pValue").toJSONObject())
-            }
+
             //匿名 ID 和用户 ID 关联
             R.id.login_btn -> {
                 SensorsDataAPI.sharedInstance(this).login("130xxxx1234",
@@ -94,13 +80,6 @@ class TrackProfileSettingsActivity : BaseActivity() {
             }
             R.id.profile_delete -> {
                 SensorsDataAPI.sharedInstance().profileDelete()
-            }
-            R.id.item_set -> {
-                SensorsDataAPI.sharedInstance().itemSet("itemType", "itemId", PropertyBuilder
-                        .newInstance().append("item", "item").toJSONObject())
-            }
-            R.id.item_delete -> {
-                SensorsDataAPI.sharedInstance().itemDelete("itemType", "itemId")
             }
             R.id.trackChannelEvent ->{
                 SensorsDataAPI.sharedInstance().trackChannelEvent("hello_world211")

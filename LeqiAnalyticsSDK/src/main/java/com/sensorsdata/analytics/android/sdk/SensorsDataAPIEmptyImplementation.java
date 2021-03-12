@@ -399,32 +399,6 @@ public class SensorsDataAPIEmptyImplementation extends SensorsDataAPI {
 
     }
 
-    @Deprecated
-    @Override
-    public void trackSignUp(String newDistinctId, JSONObject properties) {
-
-    }
-
-    @Deprecated
-    @Override
-    public void trackSignUp(String newDistinctId) {
-
-    }
-
-    @Override
-    public void trackInstallation(String eventName, JSONObject properties, boolean disableCallback) {
-
-    }
-
-    @Override
-    public void trackInstallation(String eventName, JSONObject properties) {
-
-    }
-
-    @Override
-    public void trackInstallation(String eventName) {
-
-    }
 
     @Override
     public void trackChannelEvent(String eventName) {
@@ -737,13 +711,7 @@ public class SensorsDataAPIEmptyImplementation extends SensorsDataAPI {
 
     }
 
-    @Override
-    public void itemSet(String itemType, String itemId, JSONObject properties) {
-    }
 
-    @Override
-    public void itemDelete(String itemType, String itemId) {
-    }
 
     @Override
     public void enableNetworkRequest(boolean isRequest) {

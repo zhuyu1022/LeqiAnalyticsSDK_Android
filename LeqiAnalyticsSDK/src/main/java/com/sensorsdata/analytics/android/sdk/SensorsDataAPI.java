@@ -389,7 +389,7 @@ public class SensorsDataAPI implements ISensorsDataAPI {
         deviceInfo.put(Config.LIB, "Android");
         // deviceInfo.put(Config.SDK_VERSION, VERSION);
         // deviceInfo.put("$os", "Android");
-        // deviceInfo.put("$os_version", DeviceUtils.getOS());
+        deviceInfo.put(Config.OS_VERSION, DeviceUtils.getOS());
         deviceInfo.put(Config.MANUFACTURER, DeviceUtils.getManufacturer());
         deviceInfo.put(Config.MODEL, DeviceUtils.getModel());
         // deviceInfo.put(Config.APP_VERSION, AppInfoUtils.getAppVersionName(mContext));
@@ -1608,15 +1608,6 @@ public class SensorsDataAPI implements ISensorsDataAPI {
                         if (!loginId.equals(DbAdapter.getInstance().getLoginId())) {
                             mLoginId = loginId;
                             DbAdapter.getInstance().commitLoginId(loginId);
-                            if (!loginId.equals(getAnonymousId())) {
-                                trackEvent(EventType.TRACK_SIGNUP, "$SignUp", properties, getAnonymousId());
-                            }
-                            // 通知调用 login 接口
-                            if (mEventListenerList != null) {
-                                for (SAEventListener eventListener : mEventListenerList) {
-                                    eventListener.login();
-                                }
-                            }
                         }
                     }
                 } catch (Exception e) {
@@ -1649,128 +1640,6 @@ public class SensorsDataAPI implements ISensorsDataAPI {
         });
     }
 
-    @Deprecated
-    @Override
-    public void trackSignUp(final String newDistinctId, final JSONObject properties) {
-        mTrackTaskManager.addTrackEventTask(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    String originalDistinctId = getAnonymousId();
-
-                    synchronized (mDistinctId) {
-                        mDistinctId.commit(newDistinctId);
-                    }
-
-                    trackEvent(EventType.TRACK_SIGNUP, "$SignUp", properties, originalDistinctId);
-                } catch (Exception e) {
-                    SALog.printStackTrace(e);
-                }
-            }
-        });
-    }
-
-    @Deprecated
-    @Override
-    public void trackSignUp(final String newDistinctId) {
-        mTrackTaskManager.addTrackEventTask(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    String originalDistinctId = getAnonymousId();
-                    synchronized (mDistinctId) {
-                        mDistinctId.commit(newDistinctId);
-                    }
-
-                    trackEvent(EventType.TRACK_SIGNUP, "$SignUp", null, originalDistinctId);
-                } catch (Exception e) {
-                    SALog.printStackTrace(e);
-                }
-            }
-        });
-    }
-
-    @Override
-    public void trackInstallation(final String eventName, final JSONObject properties, final boolean disableCallback) {
-        //只在主进程触发 trackInstallation
-        final JSONObject _properties;
-        if (properties != null) {
-            _properties = properties;
-        } else {
-            _properties = new JSONObject();
-        }
-
-        mTrackTaskManager.addTrackEventTask(new Runnable() {
-            @Override
-            public void run() {
-                if (!mIsMainProcess) {
-                    return;
-                }
-                try {
-                    boolean firstTrackInstallation;
-                    if (disableCallback) {
-                        firstTrackInstallation = mFirstTrackInstallationWithCallback.get();
-                    } else {
-                        firstTrackInstallation = mFirstTrackInstallation.get();
-                    }
-                    if (firstTrackInstallation) {
-                        try {
-                            if (!ChannelUtils.hasUtmProperties(_properties)) {
-                                ChannelUtils.mergeUtmByMetaData(mContext, _properties);
-                            }
-
-                            if (!ChannelUtils.hasUtmProperties(_properties)) {
-                                String installSource = ChannelUtils.getDeviceInfo(mContext,
-                                        mAndroidId);
-                                if (_properties.has("$gaid")) {
-                                    installSource = String.format("%s##gaid=%s", installSource, _properties.optString("$gaid"));
-                                }
-                                _properties.put("$ios_install_source", installSource);
-                            }
-
-                            if (_properties.has("$gaid")) {
-                                _properties.remove("$gaid");
-                            }
-
-                            if (disableCallback) {
-                                _properties.put("$ios_install_disable_callback", disableCallback);
-                            }
-                        } catch (Exception e) {
-                            SALog.printStackTrace(e);
-                        }
-
-                        // 先发送 track
-                        trackEvent(EventType.TRACK, eventName, _properties, null);
-
-                        // 再发送 profile_set_once
-                        JSONObject profileProperties = new JSONObject();
-                        SensorsDataUtils.mergeJSONObject(_properties, profileProperties);
-                        profileProperties.put("$first_visit_time", new java.util.Date());
-                        trackEvent(EventType.PROFILE_SET_ONCE, null, profileProperties, null);
-
-                        if (disableCallback) {
-                            mFirstTrackInstallationWithCallback.commit(false);
-                        } else {
-                            mFirstTrackInstallation.commit(false);
-                        }
-                    }
-                    flushSync();
-                } catch (Exception e) {
-                    SALog.printStackTrace(e);
-                }
-            }
-        });
-    }
-
-    @Override
-    public void trackInstallation(String eventName, JSONObject properties) {
-        trackInstallation(eventName, properties, false);
-    }
-
-    @Override
-    public void trackInstallation(String eventName) {
-        trackInstallation(eventName, null, false);
-    }
 
     @Override
     public void trackChannelEvent(String eventName) {
@@ -2924,62 +2793,7 @@ public class SensorsDataAPI implements ISensorsDataAPI {
         return true;
     }
 
-    private void trackItemEvent(String itemType, String itemId, String eventType, JSONObject properties) {
-        try {
-            assertKey(itemType);
-            assertValue(itemId);
-            assertPropertyTypes(properties);
 
-            String eventProject = null;
-            if (properties != null && properties.has("$project")) {
-                eventProject = (String) properties.get("$project");
-                properties.remove("$project");
-            }
-
-            JSONObject libProperties = new JSONObject();
-            libProperties.put("$lib", "Android");
-            libProperties.put("$lib_version", VERSION);
-            libProperties.put("$lib_method", "code");
-
-            if (mDeviceInfo.containsKey("$app_version")) {
-                libProperties.put("$app_version", mDeviceInfo.get("$app_version"));
-            }
-
-            JSONObject superProperties = mSuperProperties.get();
-            if (superProperties != null) {
-                if (superProperties.has("$app_version")) {
-                    libProperties.put("$app_version", superProperties.get("$app_version"));
-                }
-            }
-
-            StackTraceElement[] trace = (new Exception()).getStackTrace();
-            if (trace.length > 1) {
-                StackTraceElement traceElement = trace[0];
-                String libDetail = String.format("%s##%s##%s##%s", traceElement
-                                .getClassName(), traceElement.getMethodName(), traceElement.getFileName(),
-                        traceElement.getLineNumber());
-                if (!TextUtils.isEmpty(libDetail)) {
-                    libProperties.put("$lib_detail", libDetail);
-                }
-            }
-
-            JSONObject eventProperties = new JSONObject();
-            eventProperties.put("item_type", itemType);
-            eventProperties.put("item_id", itemId);
-            eventProperties.put("type", eventType);
-            eventProperties.put("time", System.currentTimeMillis());
-            eventProperties.put("properties", TimeUtils.formatDate(properties));
-            eventProperties.put("lib", libProperties);
-
-            if (!TextUtils.isEmpty(eventProject)) {
-                eventProperties.put("project", eventProject);
-            }
-            mMessages.enqueueEventMessage(eventType, eventProperties);
-            SALog.i(TAG, "track event:\n" + JSONUtils.formatJson(eventProperties.toString()));
-        } catch (Exception ex) {
-            SALog.printStackTrace(ex);
-        }
-    }
 
     private void initSAConfig(String serverURL, String packageName) {
         Bundle configBundle = null;
@@ -3152,25 +2966,7 @@ public class SensorsDataAPI implements ISensorsDataAPI {
         });
     }
 
-    @Override
-    public void itemSet(final String itemType, final String itemId, final JSONObject properties) {
-        mTrackTaskManager.addTrackEventTask(new Runnable() {
-            @Override
-            public void run() {
-                trackItemEvent(itemType, itemId, EventType.ITEM_SET.getEventType(), properties);
-            }
-        });
-    }
 
-    @Override
-    public void itemDelete(final String itemType, final String itemId) {
-        mTrackTaskManager.addTrackEventTask(new Runnable() {
-            @Override
-            public void run() {
-                trackItemEvent(itemType, itemId, EventType.ITEM_DELETE.getEventType(), null);
-            }
-        });
-    }
 
     public SSLSocketFactory getSSLSocketFactory() {
         return mSSLSocketFactory;
