@@ -48,7 +48,7 @@ allprojects {
 apply plugin: 'com.sensorsdata.analytics.android'
 dependencies {
   ...
-   implementation 'com.github.zhuyu1022:LeqiAnalyticsSDK_Android:1.0.0'
+   implementation 'com.github.zhuyu1022:LeqiAnalyticsSDK_Android:1.1.0'
 }
 ```
 
