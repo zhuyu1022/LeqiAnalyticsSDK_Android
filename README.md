@@ -61,17 +61,7 @@ dependencies {
 https://big-data.leqi.us/api/<app_key>/event/android 生产环境
 https://big-data.leqi.us/api/<app_key>/event/android/debug 调试使用，这种情况上报接口返回http code可能不是200，线上环境不要接入
 
-app_key   为该应用的标识 
-
-9e66e6c0  智能证件照
-ca81b25c  最美
-d0c02ba2  证件照制作
-d41ba5c2  乐骐证件照在线拍摄
-e09f591a  长宽相机
-c0681a4c  专业证件照
-b699b94c  一寸证件照制作
-
-
+app_key   为该应用的标识
 ```
 
 - **2.2 基本配置**
